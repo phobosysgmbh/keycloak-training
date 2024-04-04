@@ -1,0 +1,54 @@
+version: "3.4"
+
+services:
+  demo-keycloak-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: ${DB_SUPERUSER_PASSWORD}
+      DB_NAME_KEYCLOAK: ${DB_NAME_KEYCLOAK}
+      DB_USER_KEYCLOAK: ${DB_USER_KEYCLOAK}
+      DB_PASS_KEYCLOAK: ${DB_PASS_KEYCLOAK}
+    volumes:
+      - demo-keycloak-db-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    restart: on-failure
+    ports:
+      - 5432:5432
+    networks:
+      - demo
+
+  demo-keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    restart: on-failure
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: demo-keycloak-db
+      KC_DB_URL_PORT: 5432
+      KC_DB_DATABASE: ${DB_NAME_KEYCLOAK}
+      KC_DB_USERNAME: ${DB_USER_KEYCLOAK}
+      KC_DB_PASSWORD: ${DB_PASS_KEYCLOAK}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_PROXY_HEADERS: forwarded
+      KC_HEALTH_ENABLED: 'true'
+      KC_HOSTNAME: ${KEYCLOAK_FRONTEND_URL}
+      JAVA_OPTS_APPEND: -Djboss.as.management.blocking.timeout=3600
+    entrypoint: /opt/keycloak/bin/kc.sh --verbose --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true start-dev
+    ports:
+      - 8080:8080
+    networks:
+      - demo
+    depends_on:
+      - demo-keycloak-db
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+
+volumes:
+  demo-keycloak-db-data: {}
+
+networks:
+  demo:

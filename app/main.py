@@ -22,7 +22,6 @@ def create_app():
     config = load_config()
 
     logger.info("Starting demo server")
-    logger.info("Skjaskjkdsa")
 
     app = Flask(__name__)
     app.config.from_object(config)

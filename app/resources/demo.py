@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from oauth.instance import oidc
 from flask_restx import Resource, Namespace
@@ -14,5 +15,4 @@ class TestResource(Resource):
 
     @oidc.check_auth("")
     def get(self):
-        print("aaaaaaaaa")
-        return "test"
+        return f"test performed: {datetime.now()}"

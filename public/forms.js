@@ -3,12 +3,9 @@ window.onload = function () {
 }
 
 function initKeycloak(func) {
-    console.log("loading...");
     keycloak = new Keycloak('keycloak.json');
     console.log("init keycloak");
-    keycloak.init({
-        onLoad: 'login-required'
-    }).then(func);
+    keycloak.init({ onLoad: 'check-sso' }).then(func);
 }
 
 function logAuthState(authenticated) {
@@ -17,7 +14,7 @@ function logAuthState(authenticated) {
 
 function prefill(authenticated) {
     logAuthState(authenticated);
-    fill_introspect_info();
+    fill_introspect_info(authenticated);
 }
 
 function get_roles(token_info) {
@@ -40,20 +37,27 @@ function secured_action(event) {
         .then(y => document.getElementById("result").innerHTML = y);
 }
 
-function fill_introspect_info() {
-    // document.getElementById("token").innerHTML = keycloak.token;
-    // document.getElementById("token_input").innerHTML = keycloak.token;
-    for (element of document.getElementsByClassName("token")) {
-        element.innerHTML = keycloak.token;
+function fill_introspect_info(authenticated) {
+    if (!authenticated) {
+        document.getElementById("token").innerHTML = "not logged in";
+        return
     }
+
+    document.getElementById("token").innerHTML = keycloak.token;
 
     var roles = get_roles(keycloak.tokenParsed);
     document.getElementById("roles_info").innerHTML = roles.join("<br>");
 
     document.getElementById("logout_button").removeAttribute("disabled");
+    document.getElementById("login_button").setAttribute("disabled", "");
 }
 
-function logout_token(event) {
+function login_keycloak(event) {
+    event.preventDefault();
+    keycloak.login();
+}
+
+function logout_keycloak(event) {
     event.preventDefault();
     keycloak.logout();
 }

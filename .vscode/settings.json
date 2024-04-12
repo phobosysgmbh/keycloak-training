@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "venv": true
+    },
+    "editor.formatOnSaveMode": "modifications",
+    "editor.formatOnSave": true
+}

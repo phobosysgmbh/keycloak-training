@@ -1,7 +1,7 @@
 version: "3.4"
 
 services:
-  demo-keycloak-db:
+  keycloak-db:
     image: postgres:latest
     environment:
       POSTGRES_PASSWORD: ${DB_SUPERUSER_PASSWORD}
@@ -9,7 +9,7 @@ services:
       DB_USER_KEYCLOAK: ${DB_USER_KEYCLOAK}
       DB_PASS_KEYCLOAK: ${DB_PASS_KEYCLOAK}
     volumes:
-      - demo-keycloak-db-data:/var/lib/postgresql/data
+      - keycloak-db-data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d
     restart: on-failure
     ports:
@@ -17,12 +17,12 @@ services:
     networks:
       - demo
 
-  demo-keycloak:
+  keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     restart: on-failure
     environment:
       KC_DB: postgres
-      KC_DB_URL_HOST: demo-keycloak-db
+      KC_DB_URL_HOST: keycloak-db
       KC_DB_URL_PORT: 5432
       KC_DB_DATABASE: ${DB_NAME_KEYCLOAK}
       KC_DB_USERNAME: ${DB_USER_KEYCLOAK}
@@ -39,7 +39,7 @@ services:
     networks:
       - demo
     depends_on:
-      - demo-keycloak-db
+      - keycloak-db
     healthcheck:
       test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
       interval: 10s
@@ -47,8 +47,29 @@ services:
       retries: 3
       start_period: 1m
 
+  web:
+    image: web-demo:latest
+    restart: on-failure
+    environment:
+      FLASK_APP: main.py
+      FLASK_ENV: development
+      KEYCLOAK_HOST: keycloak
+      KEYCLOAK_PORT: 8080
+      KEYCLOAK_HOST_EXT: localhost
+      KEYCLOAK_PORT_EXT: 8080
+      KEYCLOAK_AUDIENCE: flask
+      KEYCLOAK_REALM: demo
+    ports:
+      - 5000:5000
+    networks:
+      - demo
+    depends_on:
+      keycloak:
+          condition: service_healthy
+
+
 volumes:
-  demo-keycloak-db-data: {}
+  keycloak-db-data: {}
 
 networks:
   demo:

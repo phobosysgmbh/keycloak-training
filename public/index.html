@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="http://localhost:8080/js/keycloak.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.js?version=3.52.1&features=fetch"></script>
+  <script src="forms.js"></script>
+</head>
+
+<body onload="initKeycloak(prefill)">
+
+  <section>
+    <div class="description">
+      <h3>Token</h3>
+    </div>
+    <code id="token" class="token">
+    </code>
+  </section>
+
+  <section>
+    <div class="description">
+      <h3>Roles</h3>
+    </div>
+    <div id="roles_info">
+    </div>
+  </section>
+
+  <section>
+    <div class="description">
+      <h3>secured action</h3>
+    </div>
+    <form action="#" method="POST" onsubmit='secured_action(event);'>
+      <button id="action_button" class="button" name="action" type="submit">secured action</button>
+    </form>
+    <div id="result"></div>
+  </section>
+
+  <section>
+    <div class="description">
+      <h3>logout</h3>
+    </div>
+    <form action="#" method="POST" onsubmit='logout_token(event);'>
+      <button id="logout_button" class="button" name="logout" type="submit" disabled="disabled">logout</button>
+    </form>
+  </section>
+</body>
+
+</html>

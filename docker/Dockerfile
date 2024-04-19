@@ -7,12 +7,11 @@ RUN apt-get update && \
     pip3.10 install gevent && \
     rm -rf /var/cache/apt
 
-
-COPY app /app
 COPY requirements.txt /app/requirements.txt
 
 RUN pip3.10 install -r requirements.txt
 
+COPY app /app
 COPY public /public
 
 EXPOSE 5000

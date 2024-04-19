@@ -1,0 +1,4 @@
+[Desktop Entry]
+Icon=text-html
+Type=Link
+URL[$e]=http://localhost:5000/public/index.html

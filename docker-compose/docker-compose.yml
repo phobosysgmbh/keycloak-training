@@ -33,7 +33,7 @@ services:
       KC_HEALTH_ENABLED: 'true'
       KC_HOSTNAME: ${KEYCLOAK_FRONTEND_URL}
       JAVA_OPTS_APPEND: -Djboss.as.management.blocking.timeout=3600
-    entrypoint: /opt/keycloak/bin/kc.sh --verbose --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true start-dev
+    entrypoint: /opt/keycloak/bin/kc.sh --verbose start-dev
     ports:
       - 8080:8080
     networks:

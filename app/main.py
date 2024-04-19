@@ -9,8 +9,8 @@ from flask_cors import CORS
 from oauth.instance import oidc
 
 # Namespaces
-from app.resources.public import ns as static_ns
-from app.resources.demo import ns as demo_ns
+from resources.public import ns as static_ns
+from resources.demo import ns as demo_ns
 
 import logging
 

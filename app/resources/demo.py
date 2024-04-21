@@ -16,3 +16,11 @@ class TestResource(Resource):
     @oidc.check_auth("")
     def get(self):
         return f"test performed: {datetime.now()}"
+
+
+@ns.route("/test2")
+class TestResource2(Resource):
+
+    @oidc.check_auth("candidates#view")
+    def get(self):
+        return f"test performed with 'view-candidates' role: {datetime.now()}"

@@ -7,7 +7,7 @@
   <script src="http://localhost:5000/public/forms.js"></script>
 </head>
 
-<body onload="initKeycloak(prefill);">
+<body onload="initKeycloak(init_page);">
 
   <section>
     <div class="description">
@@ -27,9 +27,9 @@
 
   <section>
     <div class="description">
-      <h3>secured action</h3>
+      <h3>login-secured action</h3>
     </div>
-    <form action="#" method="POST" onsubmit='secured_action(event);'>
+    <form action="#" method="POST" onsubmit='secured_action_1(event);'>
       <button id="action_button" class="button" name="action" type="submit">secured action</button>
     </form>
     <div id="result"></div>
@@ -37,21 +37,32 @@
 
   <section>
     <div class="description">
-      <h3>login</h3>
+      <h3>role-secured action</h3>
     </div>
-    <form action="#" method="POST" onsubmit='login_keycloak(event);'>
-      <button id="login_button" class="button" name="action" type="submit">login</button>
+    <form action="#" method="POST" onsubmit='secured_action_2(event);'>
+      <button id="action_button" class="button" name="action" type="submit">secured action</button>
     </form>
+    <div id="result-2"></div>
   </section>
 
   <section>
     <div class="description">
-      <h3>logout</h3>
+      <h3>account</h3>
     </div>
+    <form action="http://localhost:8080/realms/demo/account/" method="GET">
+      <button id="manage_account_button" class="button" name="action" type="submit" disabled="">manage
+        account</button>
+    </form>
+    
+    <form action="#" method="POST" onsubmit='login_keycloak(event);'>
+      <button id="login_button" class="button" name="action" type="submit">login</button>
+    </form>
+
     <form action="#" method="POST" onsubmit='logout_keycloak(event);'>
       <button id="logout_button" class="button" name="logout" type="submit" disabled="disabled">logout</button>
     </form>
   </section>
+
 </body>
 
 </html>

@@ -7,7 +7,7 @@ run:
 	docker-compose -f docker-compose/docker-compose.yml up
 
 run-services-only:
-	docker-compose -f docker-compose/docker-compose.yml up keycloak keycloak-db
+	docker-compose -f docker-compose/docker-compose.yml up keycloak keycloak-db ldap
 
 stop:
 	docker-compose -f docker-compose/docker-compose.yml down
